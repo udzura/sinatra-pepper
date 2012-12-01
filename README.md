@@ -1,12 +1,15 @@
 # Sinatra::Pepper
 
-TODO: Write a gem description
+A gem for loading sinatra extensions by condition, like chanko or chili gem for sinatra
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'sinatra-pepper'
+```ruby
+gem 'sinatra' # require: 'sinatra/base'
+gem 'sinatra-pepper'
+```
 
 And then execute:
 
@@ -18,7 +21,39 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'sinatra/base'
+require 'sinatra-pepper'
+
+module Pepper
+  def self.registered(base)
+    base.set :foo_key, "Hello, admin!"
+  end
+end
+
+class Sample < Sinatra::Base
+  register Sinatra::Pepper
+  register_pepper Pepper do |env|
+    env['rack.session'] && env['rack.session']['is_admin']
+  end
+
+  set :foo_key, "Hello, friend!"
+  get '/' do
+    "#{settings.foo_key}"
+  end
+end
+Sample.run!
+```
+
+Then, if you're normal user, see on `/`:
+
+    "Hello, friend!"
+
+No effect from a pepper extension. But if you're admin, you'll see:
+
+    "Hello, admin!"
+
+TBD More sample & test...
 
 ## Contributing
 
