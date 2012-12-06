@@ -25,7 +25,7 @@ Or install it yourself as:
 require 'sinatra/base'
 require 'sinatra-pepper'
 
-module Pepper
+module PepperSample
   def self.registered(base)
     base.set :foo_key, "Hello, admin!"
   end
@@ -33,7 +33,7 @@ end
 
 class Sample < Sinatra::Base
   register Sinatra::Pepper
-  register_pepper Pepper do |env|
+  register_pepper PepperSample do |env|
     env['rack.session'] && env['rack.session']['is_admin']
   end
 
